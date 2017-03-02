@@ -16,6 +16,8 @@ class LoginWindow(QDialog):
         self.setFixedSize(300, 150)
         self.initUI()
 
+        self.setStyleSheet('QDialog{background:#E3EFFF;}')
+
     def initUI(self):
 
         self.layout = QGridLayout()
