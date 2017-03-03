@@ -12,7 +12,7 @@ class RemarkDialog(QDialog):
         QDialog.__init__(self,*args)
 
         self.setFixedSize(300,200)
-        self.setWindowTitle(u'订单备注')
+        self.setWindowTitle(u'单据备注')
         self.setModal(True)
         self.fromLayout = QFormLayout()
         self.orderNo = QLineEdit(u'%s'%self.parentWidget().orderNo)

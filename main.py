@@ -7,6 +7,7 @@ import time
 
 from member import MemberListDialog
 from remark import RemarkDialog
+from return_goods import ReturnDialog
 
 class MainWindow(QWidget):
 
@@ -46,7 +47,7 @@ class MainWindow(QWidget):
         self.goodsNoInput.setFocus()
 
         self.operatorLabel = QLabel(u'导购员:2222222222')
-        self.orderNo = time.strftime('%Y%m%d%H%M%S',time.gmtime())
+        self.orderNo = 'S'+time.strftime('%Y%m%d%H%M%S',time.gmtime())
         self.orderNoLabel = QLabel(u'小票流水号:%s'%self.orderNo)
 
 
@@ -164,6 +165,7 @@ class MainWindow(QWidget):
         self.fullScreenBtn.clicked.connect(self.fullScreen)
         self.memberBtn.clicked.connect(self.showMemberDialog)
         self.remarkBtn.clicked.connect(self.showRemarkDialog)
+        self.returnBtn.clicked.connect(self.showReturnDialog)
 
         self.footer.setLayout(self.footLayout)
 
@@ -199,3 +201,8 @@ class MainWindow(QWidget):
 
         self.remarkDialog = RemarkDialog(self)
         self.remarkDialog.show()
+
+    def showReturnDialog(self):
+
+        self.returnDialog = ReturnDialog(self)
+        self.returnDialog.show()
