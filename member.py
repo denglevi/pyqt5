@@ -31,8 +31,11 @@ class MemberListDialog(QDialog):
         self.table.setSortingEnabled(True)
 
         self.addMemeberBtn = QPushButton(u'新增')
+        self.addMemeberBtn.setAutoDefault(False)
         self.rechargeBtn = QPushButton(u'充值')
+        self.rechargeBtn.setAutoDefault(False)
         self.exitBtn = QPushButton(u'退出')
+        self.exitBtn.setAutoDefault(False)
 
         self.mainLayout.addWidget(self.memberNoLabel,0,0,1,1)
         self.mainLayout.addWidget(self.memberNoInput,0,1,1,3)
