@@ -57,7 +57,9 @@ class ReturnDialog(QDialog):
 
         self.returnBtn = QPushButton(u'退货')
         self.returnBtn.setFocus(False)
+        self.returnBtn.setAutoDefault(False)
         self.cancelBtn = QPushButton(u'退出')
+        self.cancelBtn.setAutoDefault(False)
 
         self.memberNoLabel = QLabel(u'会员卡号:')
         self.memberNoLabel.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
@@ -65,7 +67,7 @@ class ReturnDialog(QDialog):
         self.setMemberName('--')
 
         self.remarkBtn = QPushButton(u'备注')
-
+        self.remarkBtn.setAutoDefault(False)
         self.memberScoreLabel = QLabel(u'本次积分:')
         self.memberScoreLabel.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         # self.memberScoreLabel.setFixedWidth(60)

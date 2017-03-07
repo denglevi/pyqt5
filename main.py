@@ -8,15 +8,16 @@ import time
 from member import MemberListDialog
 from remark import RemarkDialog
 from return_goods import ReturnDialog
+from tools import Tools
+
 
 class MainWindow(QWidget):
+    def __init__(self,data):
 
-    def __init__(self, *args):
-
-        QWidget.__init__(self, *args)
-
+        QWidget.__init__(self)
+        self.data = data
         self.initUI()
-
+        self.goodsNoInput.returnPressed.connect(self.addGoods)
         self.setWindowTitle(u'收银系统')
 
     def initUI(self):
@@ -24,7 +25,7 @@ class MainWindow(QWidget):
         self.createTable()
         self.createFooter()
         self.mainLayout = QVBoxLayout()
-        self.mainLayout.addWidget(self.horizontalGroupBox,0,Qt.AlignTop)
+        self.mainLayout.addWidget(self.horizontalGroupBox, 0, Qt.AlignTop)
         self.mainLayout.addWidget(self.table)
         self.mainLayout.addWidget(self.footer)
 
@@ -36,7 +37,7 @@ class MainWindow(QWidget):
         self.headLayout = QHBoxLayout()
         self.goodsNoLabel = QLabel(u'商品编号/条形码')
         self.goodsNoLabel.setFixedWidth(100)
-        self.goodsNoLabel.setAlignment(Qt.AlignVCenter|Qt.AlignRight)
+        self.goodsNoLabel.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
 
         self.goodsNoInput = QLineEdit()
         self.goodsNoInput.setFixedWidth(200)
@@ -46,10 +47,9 @@ class MainWindow(QWidget):
         self.goodsNoInput.setFont(font)
         self.goodsNoInput.setFocus()
 
-        self.operatorLabel = QLabel(u'导购员:2222222222')
-        self.orderNo = 'S'+time.strftime('%Y%m%d%H%M%S',time.gmtime())
-        self.orderNoLabel = QLabel(u'小票流水号:%s'%self.orderNo)
-
+        self.operatorLabel = QLabel(u'导购员:%s'%self.data['nickname'])
+        self.orderNo = 'S' + time.strftime('%Y%m%d%H%M%S', time.gmtime())
+        self.orderNoLabel = QLabel(u'小票流水号:%s' % self.orderNo)
 
         self.headLayout.addWidget(self.goodsNoLabel)
         self.headLayout.addWidget(self.goodsNoInput)
@@ -64,11 +64,18 @@ class MainWindow(QWidget):
 
     def createTable(self):
 
-        self.table = QTableWidget()
-        self.table.setColumnCount(17)
-        self.table.setHorizontalHeaderLabels(
-            [u'',u'编号/条形码',u'品名', u'规格', u'货号', u'单位', u'单价', u'折扣率％', u'折扣价', u'数量', u'金额',u'生产日期',u'保质期',u'到期日期',u'生产批号',u'供应商',u'备注'])
-        self.table.setSortingEnabled(True)
+        self.model = QStandardItemModel(4, 16)
+        self.model.setHorizontalHeaderLabels(
+            [u'编号/条形码', u'品名', u'规格', u'货号', u'单位', u'单价', u'折扣率％', u'折扣价', u'数量', u'金额', u'生产日期', u'保质期', u'到期日期',
+             u'生产批号', u'供应商', u'备注'])
+        for row in range(4):
+            for column in range(4):
+                item = QStandardItem("row %s, column %s" % (row, column))
+                self.model.setItem(row, column, item)
+        self.table = QTableView()
+        self.table.horizontalHeader().setStretchLastSection(True)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table.setModel(self.model)
 
     def createFooter(self):
 
@@ -82,11 +89,10 @@ class MainWindow(QWidget):
         self.goodsNumLabel = QLabel(u'商品数量:10')
         self.goodsDiscountLabel = QLabel(u'折扣:10')
 
-        self.footerTotalLayout.addWidget(self.priceNumLabel,0,0,2,6)
-        self.footerTotalLayout.addWidget(self.goodsNumLabel,2,0,1,2)
-        self.footerTotalLayout.addWidget(self.goodsDiscountLabel,2,5,-2,2)
+        self.footerTotalLayout.addWidget(self.priceNumLabel, 0, 0, 2, 6)
+        self.footerTotalLayout.addWidget(self.goodsNumLabel, 2, 0, 1, 2)
+        self.footerTotalLayout.addWidget(self.goodsDiscountLabel, 2, 5, -2, 2)
         self.footerTotal.setLayout(self.footerTotalLayout)
-
 
         self.ysLabel = QLabel(u'应收:')
         self.ysLabel.setFixedWidth(40)
@@ -137,30 +143,30 @@ class MainWindow(QWidget):
         self.chargeBtn = QPushButton(u'兑换')
         self.chargeBtn.setFixedWidth(80)
 
-        self.footLayout.addWidget(self.footerTotal,0,0,4,8)
-        self.footLayout.addWidget(self.ysLabel,0,8,1,1)
-        self.footLayout.addWidget(self.skLabel,1,8,1,1)
-        self.footLayout.addWidget(self.zlLabel,2,8,1,1)
-        self.footLayout.addWidget(self.ysInput,0,9,1,1)
-        self.footLayout.addWidget(self.skInput,1,9,1,1)
-        self.footLayout.addWidget(self.zlInput,2,9,1,1)
-        self.footLayout.addWidget(self.blankInput,0,10,1,1)
-        self.footLayout.addWidget(self.discountBtn,1,10,1,1)
-        self.footLayout.addWidget(self.finishBtn,3,9,1,1)
-        self.footLayout.addWidget(self.returnBtn,3,10,1,1)
-        self.footLayout.addWidget(self.gdBtn,4,8,1,1)
-        self.footLayout.addWidget(self.qdBtn,4,9,1,1)
-        self.footLayout.addWidget(self.sdBtn,4,10,1,1)
-        self.footLayout.addWidget(self.remarkBtn,5,10,1,1)
-        self.footLayout.addWidget(self.fullScreenBtn,5,9,1,1)
-        self.footLayout.addWidget(self.memberBtn,5,7,1,1)
-        self.footLayout.addWidget(self.orderBtn,5,8,1,1)
-        self.footLayout.addWidget(self.memberNoLabel,4,0,1,1)
-        self.footLayout.addWidget(self.memberNoInput,4,1,1,1)
-        self.footLayout.addWidget(self.memberScoreLabel,4,2,1,1)
-        self.footLayout.addWidget(self.memberScoreInput,4,3,1,1)
-        self.footLayout.addWidget(self.chargeBtn,4,4,1,1)
-        self.footLayout.addWidget(self.memberName,5,0,1,2)
+        self.footLayout.addWidget(self.footerTotal, 0, 0, 4, 8)
+        self.footLayout.addWidget(self.ysLabel, 0, 8, 1, 1)
+        self.footLayout.addWidget(self.skLabel, 1, 8, 1, 1)
+        self.footLayout.addWidget(self.zlLabel, 2, 8, 1, 1)
+        self.footLayout.addWidget(self.ysInput, 0, 9, 1, 1)
+        self.footLayout.addWidget(self.skInput, 1, 9, 1, 1)
+        self.footLayout.addWidget(self.zlInput, 2, 9, 1, 1)
+        self.footLayout.addWidget(self.blankInput, 0, 10, 1, 1)
+        self.footLayout.addWidget(self.discountBtn, 1, 10, 1, 1)
+        self.footLayout.addWidget(self.finishBtn, 3, 9, 1, 1)
+        self.footLayout.addWidget(self.returnBtn, 3, 10, 1, 1)
+        self.footLayout.addWidget(self.gdBtn, 4, 8, 1, 1)
+        self.footLayout.addWidget(self.qdBtn, 4, 9, 1, 1)
+        self.footLayout.addWidget(self.sdBtn, 4, 10, 1, 1)
+        self.footLayout.addWidget(self.remarkBtn, 5, 10, 1, 1)
+        self.footLayout.addWidget(self.fullScreenBtn, 5, 9, 1, 1)
+        self.footLayout.addWidget(self.memberBtn, 5, 7, 1, 1)
+        self.footLayout.addWidget(self.orderBtn, 5, 8, 1, 1)
+        self.footLayout.addWidget(self.memberNoLabel, 4, 0, 1, 1)
+        self.footLayout.addWidget(self.memberNoInput, 4, 1, 1, 1)
+        self.footLayout.addWidget(self.memberScoreLabel, 4, 2, 1, 1)
+        self.footLayout.addWidget(self.memberScoreInput, 4, 3, 1, 1)
+        self.footLayout.addWidget(self.chargeBtn, 4, 4, 1, 1)
+        self.footLayout.addWidget(self.memberName, 5, 0, 1, 2)
 
         self.fullScreenBtn.clicked.connect(self.fullScreen)
         self.memberBtn.clicked.connect(self.showMemberDialog)
@@ -177,7 +183,8 @@ class MainWindow(QWidget):
         self.operatorLabel.setStyleSheet('QLabel{font-size:15px;}')
         self.orderNoLabel.setStyleSheet('QLabel{font-size:15px;}')
 
-        self.footerTotal.setStyleSheet('QFrame{background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0#FC7759, stop: 1 #FFFFFF);}')
+        self.footerTotal.setStyleSheet(
+            'QFrame{background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0#FC7759, stop: 1 #FFFFFF);}')
         self.priceNumLabel.setStyleSheet('QLabel{background:none;font-size:40px;font-weight:700;}')
         self.goodsNumLabel.setStyleSheet('QLabel{background:none;font-size:20px;}')
         self.goodsDiscountLabel.setStyleSheet('QLabel{background:none;font-size:20px;}')
@@ -206,3 +213,18 @@ class MainWindow(QWidget):
 
         self.returnDialog = ReturnDialog(self)
         self.returnDialog.show()
+
+    def addGoods(self):
+
+        goodsNo = self.goodsNoInput.text()
+        if len(goodsNo) == 0:
+            return
+        if len(goodsNo) < 5:
+            Tools.showMsgDialog(u'[%s]查无此商品!!!' % goodsNo, self)
+            return
+        self.model.appendRow([
+            QStandardItem(goodsNo),
+            QStandardItem(goodsNo),
+            QStandardItem(goodsNo),
+            QStandardItem(goodsNo),
+        ])

@@ -69,6 +69,7 @@ class AddMemberDialog(QDialog):
         self.mainLayout = QFormLayout()
 
         self.memberTypeInput = QComboBox()
+        self.memberTypeInput.addItems([u'金牌',u'银牌',u'铜牌'])
         self.memberOpenDateInput = QDateEdit(QDate.currentDate())
         self.memberOpenDateInput.setDisplayFormat('yyyy-MM-dd')
         self.memberOpenDateInput.setCalendarPopup(True)
